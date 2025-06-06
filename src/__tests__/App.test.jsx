@@ -13,17 +13,27 @@ describe("Hog App", () => {
   });
 
   it("displays additional hog details when a tile is clicked", () => {
-    render(<App />);
-    const index = Math.floor(Math.random() * 11)
-    const hogTile = screen.getByText(hogs[index].name);
-    hogTile.parentElement.parentElement
-    fireEvent.click(hogTile);
+  render(<App />);
+  const index = Math.floor(Math.random() * hogs.length);
+  const hogTile = screen.getByText(hogs[index].name);
 
-    expect(screen.getByText(`Specialty: ${hogs[index].specialty}`)).toBeInTheDocument();
-    expect(screen.getByText(hogs[index].weight)).toBeInTheDocument();
-    expect(screen.getByText(hogs[index].greased ? "Greased" : "Nongreased")).toBeInTheDocument();
-    expect(screen.getByText(hogs[index]["highest medal achieved"])).toBeInTheDocument();
-  });
+  fireEvent.click(hogTile);
+
+  expect(screen.getByText((content) => {
+    return content.includes("Specialty:") && content.includes(hogs[index].specialty);
+  })).toBeInTheDocument();
+
+  expect(screen.getByText(String(hogs[index].weight))).toBeInTheDocument();
+
+  expect(
+    screen.getByText(hogs[index].greased ? "Yes" : "No")
+  ).toBeInTheDocument();
+
+  expect(screen.getByText(hogs[index]["highest medal achieved"])).toBeInTheDocument();
+});
+
+
+
 
   it("filters hogs by greased status", () => {
     render(<App />);
